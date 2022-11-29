@@ -44,6 +44,16 @@ module Taiga
 
   class Task < FlexiBase
     get :all, '/tasks'
+
+    post :create, '/tasks', requires: %i[project subject]
+
+    delete :remove, '/tasks/:id'
+    before_request :clear_params
+    def clear_params(name, request)
+      # NOTE: Flexirest puts all object attributes as parameter but Taiga reject these ones, so we need to clean all parameters before request
+      request.get_params = {} if name == :remove
+      nil
+    end
   end
 
   class Auth < Flexirest::Base
