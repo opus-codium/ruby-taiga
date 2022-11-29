@@ -33,15 +33,6 @@ module Taiga
     end
   end
 
-  class Milestone < FlexiBase
-    get :all, '/milestones'
-    get :find, '/milestones/:id'
-
-    def tasks
-      Taiga::Task.all(milestone: id, project: project)
-    end
-  end
-
   class UserStory < FlexiBase
     get :all, '/userstories'
     get :find, '/userstories/:id'
@@ -50,6 +41,15 @@ module Taiga
 
     def tasks
       Taiga::Task.all user_story: id, project: project
+    end
+  end
+
+  class Milestone < FlexiBase
+    get :all, '/milestones', has_many: { user_stories: UserStory }
+    get :find, '/milestones/:id'
+
+    def tasks
+      Taiga::Task.all milestone: id, project: project
     end
   end
 
