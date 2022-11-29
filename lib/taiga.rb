@@ -27,6 +27,10 @@ module Taiga
     def milestones
       Taiga::Milestone.all(project: id)
     end
+
+    def user_stories
+      Taiga::UserStory.all project: id
+    end
   end
 
   class Milestone < FlexiBase
