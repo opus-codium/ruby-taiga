@@ -39,7 +39,10 @@ module Taiga
   end
 
   class UserStory < FlexiBase
+    get :all, '/userstories'
     get :find, '/userstories/:id'
+
+    post :create, '/userstories', requires: %i[project subject]
   end
 
   class Task < FlexiBase
