@@ -31,5 +31,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'flexirest'
 
   spec.add_development_dependency 'byebug'
+  spec.add_development_dependency 'github_changelog_generator'
+
   spec.metadata['rubygems_mfa_required'] = 'true'
 end
