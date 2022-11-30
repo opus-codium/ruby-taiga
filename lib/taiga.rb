@@ -27,23 +27,44 @@ module Taiga
     def milestones
       Taiga::Milestone.all(project: id)
     end
-  end
 
-  class Milestone < FlexiBase
-    get :all, '/milestones'
-    get :find, '/milestones/:id'
-
-    def tasks
-      Taiga::Task.all(milestone: id, project: project)
+    def user_stories
+      Taiga::UserStory.all project: id
     end
   end
 
   class UserStory < FlexiBase
+    get :all, '/userstories'
     get :find, '/userstories/:id'
+
+    post :create, '/userstories', requires: %i[project subject]
+
+    def tasks
+      Taiga::Task.all user_story: id, project: project
+    end
+  end
+
+  class Milestone < FlexiBase
+    get :all, '/milestones', has_many: { user_stories: UserStory }
+    get :find, '/milestones/:id'
+
+    def tasks
+      Taiga::Task.all milestone: id, project: project
+    end
   end
 
   class Task < FlexiBase
     get :all, '/tasks'
+
+    post :create, '/tasks', requires: %i[project subject]
+
+    delete :remove, '/tasks/:id'
+    before_request :clear_params
+    def clear_params(name, request)
+      # NOTE: Flexirest puts all object attributes as parameter but Taiga reject these ones, so we need to clean all parameters before request
+      request.get_params = {} if name == :remove
+      nil
+    end
   end
 
   class Auth < Flexirest::Base
